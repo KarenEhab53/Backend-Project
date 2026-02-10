@@ -25,8 +25,8 @@ const Contact = require("./models/Contact");
 const Author = require("./models/Author");
 const Book = require("./models/Book");
 const Product = require("./models/Product");
-const Students=require("./models/Students")
-const ClassRoom=require("./models/ClassRoom")
+const Students = require("./models/Students");
+const ClassRoom = require("./models/ClassRoom");
 //make a post rout for to do list
 app.post("/api/tasks", async (req, res) => {
   try {
@@ -41,8 +41,8 @@ app.post("/api/tasks", async (req, res) => {
   } catch (err) {
     console.error(err);
     res
-    .status(500)
-    .json({ success: false, msg: "Server error", error: err.message });
+      .status(500)
+      .json({ success: false, msg: "Server error", error: err.message });
   }
 });
 //get tasks
@@ -60,6 +60,31 @@ app.get("/api/tasks", async (req, res) => {
     console.log(err);
   }
 });
+//delete tasks
+app.delete("/api/task/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const task = await Task.findByIdAndDelete(id);
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        msg: "contact not found",
+        data: task,
+      });
+    }
+    res.json({
+      success: true,
+      msg: "task deleted successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      msg: "Server error",
+      error: err.message,
+    });
+  }
+});
 //post contact
 app.post("/api/contact", async (req, res) => {
   try {
@@ -74,8 +99,8 @@ app.post("/api/contact", async (req, res) => {
   } catch (err) {
     console.error(err);
     res
-    .status(500)
-    .json({ success: false, msg: "Server error", error: err.message });
+      .status(500)
+      .json({ success: false, msg: "Server error", error: err.message });
   }
 });
 //get contact
@@ -92,8 +117,8 @@ app.get("/api/contact", async (req, res) => {
   } catch (err) {
     console.error(err);
     res
-    .status(500)
-    .json({ success: false, msg: "Server error", error: err.message });
+      .status(500)
+      .json({ success: false, msg: "Server error", error: err.message });
   }
 });
 //delete contact
@@ -132,7 +157,7 @@ app.post("/api/author", async (req, res) => {
         msg: "Name is required",
       });
     }
-    
+
     const author = await Author.create({ name });
     res.json({
       success: true,
@@ -162,8 +187,8 @@ app.get("/api/authors", async (req, res) => {
   } catch (err) {
     console.error(err);
     res
-    .status(500)
-    .json({ success: false, msg: "Server error", error: err.message });
+      .status(500)
+      .json({ success: false, msg: "Server error", error: err.message });
   }
 });
 // post books
@@ -205,8 +230,8 @@ app.get("/api/books", async (req, res) => {
   } catch (err) {
     console.error(err);
     res
-    .status(500)
-    .json({ success: false, msg: "Server error", error: err.message });
+      .status(500)
+      .json({ success: false, msg: "Server error", error: err.message });
   }
 });
 // delete author
@@ -225,8 +250,8 @@ app.delete("/api/author/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res
-    .status(500)
-    .json({ success: false, msg: "Server error", error: err.message });
+      .status(500)
+      .json({ success: false, msg: "Server error", error: err.message });
   }
 });
 //delete books
@@ -244,8 +269,8 @@ app.delete("/api/book/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res
-    .status(500)
-    .json({ success: false, msg: "Server error", error: err.message });
+      .status(500)
+      .json({ success: false, msg: "Server error", error: err.message });
   }
 });
 //post products
@@ -267,25 +292,25 @@ app.post("/api/product", async (req, res) => {
   } catch (err) {
     console.error(err);
     res
-    .status(500)
-    .json({ success: false, msg: "Server error", error: err.message });
+      .status(500)
+      .json({ success: false, msg: "Server error", error: err.message });
   }
 });
 // get products
 app.get("/api/products", async (req, res) => {
   try {
     const { category } = req.query;
-    
+
     let filter = {};
     if (category) {
-      filter.category = category; 
+      filter.category = category;
     }
     const products = await Product.find(filter);
-    const count= await Product.countDocuments()
+    const count = await Product.countDocuments();
     res.json({
       success: true,
       msg: "Products fetched successfully",
-      totalProducts:count,
+      totalProducts: count,
       data: products,
     });
   } catch (err) {
@@ -313,24 +338,24 @@ app.delete("/api/product/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res
-    .status(500)
-    .json({ success: false, msg: "Server error", error: err.message });
+      .status(500)
+      .json({ success: false, msg: "Server error", error: err.message });
   }
 });
 //post students
 app.post("/api/student", async (req, res) => {
   try {
     const { name, email } = req.body;
-    
+
     if (!name || !email) {
       return res.status(400).json({
         success: false,
         msg: "Name and email are required",
       });
     }
-    
+
     const student = await Students.create({ name, email });
-    
+
     res.status(201).json({
       success: true,
       msg: "Student created successfully",
@@ -338,7 +363,7 @@ app.post("/api/student", async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    
+
     // Handle duplicate email error
     if (err.code === 11000) {
       return res.status(400).json({
@@ -346,7 +371,7 @@ app.post("/api/student", async (req, res) => {
         msg: "Email already exists",
       });
     }
-    
+
     res.status(500).json({
       success: false,
       msg: "Server error",
@@ -355,9 +380,7 @@ app.post("/api/student", async (req, res) => {
   }
 });
 
-
-
-//get all students 
+//get all students
 app.get("/api/students", async (req, res) => {
   try {
     const student = await Students.find();
@@ -392,27 +415,27 @@ app.delete("/api/student/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res
-    .status(500)
-    .json({ success: false, msg: "Server error", error: err.message });
+      .status(500)
+      .json({ success: false, msg: "Server error", error: err.message });
   }
 });
 //post classroom
 app.post("/api/classroom", async (req, res) => {
   try {
     const { name, students } = req.body;
-    
+
     if (!name || !students || students.length === 0) {
       return res.status(400).json({
         success: false,
         msg: "name and students are required",
       });
     }
-    
+
     const classroom = await ClassRoom.create({
       name,
       students,
     });
-    
+
     res.status(201).json({
       success: true,
       msg: "classroom created successfully",
@@ -428,10 +451,10 @@ app.post("/api/classroom", async (req, res) => {
   }
 });
 
-//get all ClassRooms 
+//get all ClassRooms
 app.get("/api/classrooms", async (req, res) => {
   try {
-    const classroom = await ClassRoom.find().populate("students","name");
+    const classroom = await ClassRoom.find().populate("students", "name");
     const count = await ClassRoom.countDocuments();
     res.json({
       success: true,
@@ -454,7 +477,9 @@ app.delete("/api/classroom/:id", async (req, res) => {
     const { id } = req.params;
     const classroom = await ClassRoom.findByIdAndDelete(id);
     if (!ClassRoom) {
-      return res.status(404).json({ success: false, msg: "ClassRoom not found" });
+      return res
+        .status(404)
+        .json({ success: false, msg: "ClassRoom not found" });
     }
     res.json({
       success: true,
@@ -463,8 +488,8 @@ app.delete("/api/classroom/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res
-    .status(500)
-    .json({ success: false, msg: "Server error", error: err.message });
+      .status(500)
+      .json({ success: false, msg: "Server error", error: err.message });
   }
 });
 const port = process.env.PORT || 3000;
